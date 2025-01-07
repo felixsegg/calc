@@ -9,10 +9,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <mainClass>main.java.App</mainClass>
+        <mvnexec.version>3.1.0</mvnexec.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
@@ -32,14 +35,52 @@
     </dependencies>
 
     <build>
+
+        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+            </resource>
+            <resource>
+                <directory>src</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.png</include>
+                    <include>**/*.css</include>
+                    <include>**/*.pdf</include>
+                    <include>**/*.dotx</include>
+                    <include>**/*.docx</include>
+                    <include>**/*.svg</include>
+                </includes>
+                <excludes>
+                    <exclude>UML/**</exclude>
+                    <exclude>resources/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>tests</directory>
+                <includes>
+                    <include>**/*.xlsx</include>
+                </includes>
+            </resource>
+        </resources>
+
         <plugins>
-            <!-- Plugin für JavaFX -->
             <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${mvnexec.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <mainClass>Main</mainClass>
+                    <mainClass>${mainClass}</mainClass>
                 </configuration>
             </plugin>
         </plugins>
