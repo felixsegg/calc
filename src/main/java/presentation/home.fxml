@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="main.java.presentation.homeController"
-      prefHeight="400.0" prefWidth="600.0">
-    <Label text="Hier ist noch nichts zu sehen :)" />
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
+<VBox alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.presentation.homeController">
+    <Label fx:id="outputLabel" minHeight="100.0" prefHeight="100.0" prefWidth="400.0" style="-fx-font-size: 32;" text="1+2+3+4" textAlignment="RIGHT" />
+    <GridPane alignment="CENTER" gridLinesVisible="true" VBox.vgrow="NEVER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+            <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+        </rowConstraints>
+
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="√" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="(" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text=")" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="÷" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="7" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="8" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="9" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="×" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="4" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="5" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="6" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="-" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="1" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="2" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="3" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="+" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="C" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="." textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+        <Label alignment="CENTER" onMouseClicked="#keyClick" prefHeight="100.0" prefWidth="100.0" style="-fx-font-size: 32; -fx-background-color: lightblue;" text="=" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+    </GridPane>
 </VBox>
