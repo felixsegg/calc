@@ -1,23 +1,79 @@
 package main.java.presentation;
 
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class homeController implements Initializable {
     @FXML
-    private Label outputLabel;
+    private HBox topBoxHBox;
+    @FXML
+    private GridPane keyGrid;
+    @FXML
+    private Label outputLabel, backspaceLabel;
+    @FXML
+    private VBox root;
     private StringProperty output;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // TODO: initialize
         output = outputLabel.textProperty();
+        
+        initializeOutputLabel();
+        initializeKeyGrid();
+        Platform.runLater(this::initializeHotkeys);
+    }
+    
+    private void initializeOutputLabel() {
+        root.widthProperty().addListener((obs, oldV, newV) -> outputLabel.setMaxWidth(newV.doubleValue() - topBoxHBox.getSpacing() - backspaceLabel.getWidth()));
+    }
+    
+    private void initializeKeyGrid() {
+        ReadOnlyDoubleProperty gridHProp = keyGrid.heightProperty();
+        ReadOnlyDoubleProperty gridWProp = keyGrid.widthProperty();
+        
+        for (Node n : keyGrid.getChildren()) {
+            if (n instanceof Label l) {
+                gridHProp.addListener((obs, oldV, newV) -> l.setPrefHeight(newV.doubleValue() / 5.0));
+                gridWProp.addListener((obs, oldV, newV) -> l.setPrefWidth(newV.doubleValue() / 4.0));
+            }
+        }
+    }
+    
+    private void initializeHotkeys() {
+        root.getScene().setOnKeyPressed(keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ENTER -> equalsClick();
+                case DIGIT0, NUMPAD0 -> addNumber('0');
+                case DIGIT1, NUMPAD1 -> addNumber('1');
+                case DIGIT2, NUMPAD2 -> addNumber('2');
+                case DIGIT3, NUMPAD3 -> addNumber('3');
+                case DIGIT4, NUMPAD4 -> addNumber('4');
+                case DIGIT5, NUMPAD5 -> addNumber('5');
+                case DIGIT6, NUMPAD6 -> addNumber('6');
+                case DIGIT7, NUMPAD7 -> addNumber('7');
+                case DIGIT8, NUMPAD8 -> addNumber('8');
+                case DIGIT9, NUMPAD9 -> addNumber('9');
+                case PERIOD, COMMA, DECIMAL -> addDecimalPoint();
+                case MULTIPLY, STAR -> addOperation('×');
+                case DIVIDE, SLASH -> addOperation('÷');
+                case PLUS, ADD -> addOperation('+');
+                case MINUS, SUBTRACT -> addMinus();
+                case BACK_SPACE -> backspaceClick();
+            }
+        });
     }
     
     @FXML
@@ -56,6 +112,7 @@ public class homeController implements Initializable {
     }
     
     private void equalsClick() {
+        System.out.println("Jetzt Exception");
         throw new RuntimeException("Not implemented yet");
     }
     
@@ -66,18 +123,16 @@ public class homeController implements Initializable {
         
         // String must not end in 0 or has a decimal point right in front of ending String of zeroes if new input is
         // supposed to be 0, otherwise it gets ignored.
-        if (c != '0' || current.matches(regexCheckZero))
-            output.set(current + c);
+        if (c != '0' || current.matches(regexCheckZero)) output.set(current + c);
     }
     
     private void addOpeningParenthesis() {
         String current = output.get();
-        if (current.isEmpty())
-            output.set("(");
+        if (current.isEmpty()) output.set("(");
         else {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
-                case '.' -> output.set(current.concat("0("));
+                case '.' -> output.set(current.concat("0×("));
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ')' -> output.set(current.concat("×("));
                 default -> output.set(current + '(');
             }
@@ -86,17 +141,20 @@ public class homeController implements Initializable {
     
     private void addClosingParenthesis() {
         String current = output.get();
-        if (!current.isEmpty() && current.charAt(current.length()-1) == '(')
-            output.set(current.substring(0, current.length()-1));
-        else {
+        if (current.isEmpty()) return;
+        char lastChar = current.charAt(current.length() - 1);
+        if (current.charAt(current.length() - 1) == '(') output.set(current.substring(0, current.length() - 1));
+        else if (lastChar != '-' && lastChar != '+' && lastChar != '√' && lastChar != '×' && lastChar != '÷') {
             int countOpening = 0;
             int countClosing = 0;
             for (int i = 0; i < current.length(); i++) {
                 if (current.charAt(i) == '(') countOpening++;
                 else if (current.charAt(i) == ')') countClosing++;
             }
-            if (countClosing < countOpening)
+            if (countClosing < countOpening) {
+                if (lastChar == '.') output.set(current + '0');
                 output.set(current + ')');
+            }
         }
     }
     
@@ -107,7 +165,7 @@ public class homeController implements Initializable {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
                 case '.' -> output.set(current.concat("0-"));
-                case '-' -> output.set(current.substring(0, current.length()-1));
+                case '-' -> output.set(current.substring(0, current.length() - 1));
                 case '+', '√', '×', '÷' -> output.set(current.concat("(-"));
                 default -> output.set(current + '-');
             }
@@ -122,9 +180,10 @@ public class homeController implements Initializable {
         char lastChar = current.charAt(current.length() - 1);
         switch (lastChar) {
             case '.' -> output.set(current + '0' + c);
-            case '+', '√', '×', '÷', '-' -> output.set(current.substring(0, current.length()-1) + c); // Substitute operation with new one
+            case '+', '×', '÷' ->
+                    output.set(current.substring(0, current.length() - 1) + c); // Substitute operation with new one
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ')' -> output.set(current + c);
-            // In case of '(' the input is ignored
+            // In case of '(', '-' or '√' the input is ignored
         }
     }
     
@@ -134,7 +193,7 @@ public class homeController implements Initializable {
         // characters at the end, another one may not be put in.
         String regexNoDecPointBefore = "^(?!.*\\.\\d*$).*$";
         if (current.isEmpty()) output.set("0.");
-        else if (current.matches(regexNoDecPointBefore)){
+        else if (current.matches(regexNoDecPointBefore)) {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
                 case '+', '√', '×', '÷', '-', '(' -> output.set(current.concat("0."));
