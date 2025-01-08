@@ -18,7 +18,12 @@ public class App extends Application {
         primaryStage.setTitle("Taschenrechner");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/main/resources/icon.png"))));
         primaryStage.setScene(new Scene(root));
+        
         primaryStage.show();
+        
+        // stage must not be smaller than the initial size. Has to be set after .show(), since the values are set only after.
+        primaryStage.setMinWidth(primaryStage.getWidth());
+        primaryStage.setMinHeight(primaryStage.getHeight());
     }
     
     public static void main(String[] args) {
