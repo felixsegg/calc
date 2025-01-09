@@ -1,21 +1,25 @@
-package main.java.presentation;
+package main.java.presentation.home;
 
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import main.java.exception.TermSyntaxException;
+import main.java.logic.service.CalculationService;
+import main.java.presentation.Toast;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class homeController implements Initializable {
+public class HomeController implements Initializable {
     @FXML
     private HBox topBoxHBox;
     @FXML
@@ -24,16 +28,27 @@ public class homeController implements Initializable {
     private Label outputLabel, backspaceLabel;
     @FXML
     private VBox root;
+    private Scene scene;
     private StringProperty output;
+    private final CalculationService service = CalculationService.getInstance();
+    private BigDecimal ans;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // TODO: initialize
+        ans = BigDecimal.ZERO; // ANS is initially zero
         output = outputLabel.textProperty();
+        
+        // The scene might not be set instantly, so as soon as this happens, the hotkeys will be initialized on it.
+        root.sceneProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                scene = newV;
+                initializeHotkeys();
+            }
+        });
         
         initializeOutputLabel();
         initializeKeyGrid();
-        Platform.runLater(this::initializeHotkeys);
+        
     }
     
     private void initializeOutputLabel() {
@@ -53,27 +68,32 @@ public class homeController implements Initializable {
     }
     
     private void initializeHotkeys() {
-        root.getScene().setOnKeyPressed(keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case ENTER -> equalsClick();
-                case DIGIT0, NUMPAD0 -> addNumber('0');
-                case DIGIT1, NUMPAD1 -> addNumber('1');
-                case DIGIT2, NUMPAD2 -> addNumber('2');
-                case DIGIT3, NUMPAD3 -> addNumber('3');
-                case DIGIT4, NUMPAD4 -> addNumber('4');
-                case DIGIT5, NUMPAD5 -> addNumber('5');
-                case DIGIT6, NUMPAD6 -> addNumber('6');
-                case DIGIT7, NUMPAD7 -> addNumber('7');
-                case DIGIT8, NUMPAD8 -> addNumber('8');
-                case DIGIT9, NUMPAD9 -> addNumber('9');
-                case PERIOD, COMMA, DECIMAL -> addDecimalPoint();
-                case MULTIPLY, STAR -> addOperation('×');
-                case DIVIDE, SLASH -> addOperation('÷');
-                case PLUS, ADD -> addOperation('+');
-                case MINUS, SUBTRACT -> addMinus();
-                case BACK_SPACE -> backspaceClick();
-            }
-        });
+        try {
+            scene.setOnKeyPressed(keyEvent -> {
+                switch (keyEvent.getCode()) {
+                    case ENTER -> equalsClick();
+                    case DIGIT0, NUMPAD0 -> addNumber('0');
+                    case DIGIT1, NUMPAD1 -> addNumber('1');
+                    case DIGIT2, NUMPAD2 -> addNumber('2');
+                    case DIGIT3, NUMPAD3 -> addNumber('3');
+                    case DIGIT4, NUMPAD4 -> addNumber('4');
+                    case DIGIT5, NUMPAD5 -> addNumber('5');
+                    case DIGIT6, NUMPAD6 -> addNumber('6');
+                    case DIGIT7, NUMPAD7 -> addNumber('7');
+                    case DIGIT8, NUMPAD8 -> addNumber('8');
+                    case DIGIT9, NUMPAD9 -> addNumber('9');
+                    case PERIOD, COMMA, DECIMAL -> addDecimalPoint();
+                    case MULTIPLY, STAR -> addOperation('×');
+                    case DIVIDE, SLASH -> addOperation('÷');
+                    case PLUS, ADD -> addOperation('+');
+                    case MINUS, SUBTRACT -> addMinus();
+                    case BACK_SPACE -> backspaceClick();
+                }
+            });
+        } catch (NullPointerException ex) {
+            System.out.println("Hotkeys not active.");
+        }
+        
     }
     
     @FXML
@@ -111,24 +131,23 @@ public class homeController implements Initializable {
         output.set("");
     }
     
-    private void equalsClick() {
-        System.out.println("Jetzt Exception");
-        throw new RuntimeException("Not implemented yet");
-    }
-    
     private void addNumber(char c) {
         String current = output.get();
-        if (current.isEmpty()) output.set(String.valueOf(c));
-        String regexCheckZero = ".*\\.[0*]?$|.*[^0]$";
-        
-        // String must not end in 0 or has a decimal point right in front of ending String of zeroes if new input is
-        // supposed to be 0, otherwise it gets ignored.
-        if (c != '0' || current.matches(regexCheckZero)) output.set(current + c);
+        if (current.isEmpty() || current.equals("E")) output.set(String.valueOf(c));
+        else {
+            String regexCheckZero = ".*\\.[0*]?$|.*[^0]$";
+            
+            // String must not end in 0 or has a decimal point right in front of ending String of zeroes if new input is
+            // supposed to be 0, otherwise it gets ignored.
+            
+            // TODO: Fix leading zero.
+            if (c != '0' || current.matches(regexCheckZero)) output.set(current + c);
+        }
     }
     
     private void addOpeningParenthesis() {
         String current = output.get();
-        if (current.isEmpty()) output.set("(");
+        if (current.isEmpty() || current.equals("E")) output.set("(");
         else {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
@@ -141,7 +160,7 @@ public class homeController implements Initializable {
     
     private void addClosingParenthesis() {
         String current = output.get();
-        if (current.isEmpty()) return;
+        if (current.isEmpty() || current.equals("E")) return;
         char lastChar = current.charAt(current.length() - 1);
         if (current.charAt(current.length() - 1) == '(') output.set(current.substring(0, current.length() - 1));
         else if (lastChar != '-' && lastChar != '+' && lastChar != '√' && lastChar != '×' && lastChar != '÷') {
@@ -160,7 +179,7 @@ public class homeController implements Initializable {
     
     private void addMinus() {
         String current = output.get();
-        if (current.isEmpty()) output.set("(-");
+        if (current.isEmpty() || current.equals("E")) output.set("(-");
         else {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
@@ -175,7 +194,7 @@ public class homeController implements Initializable {
     private void addOperation(char c) {
         // For '+', '×', '÷'
         String current = output.get();
-        if (current.isEmpty()) return;
+        if (current.isEmpty() || current.equals("E")) return;
         
         char lastChar = current.charAt(current.length() - 1);
         switch (lastChar) {
@@ -192,7 +211,7 @@ public class homeController implements Initializable {
         // Regex: If a decimal point is already set, whether directly at the end or before an unbroken string of number
         // characters at the end, another one may not be put in.
         String regexNoDecPointBefore = "^(?!.*\\.\\d*$).*$";
-        if (current.isEmpty()) output.set("0.");
+        if (current.isEmpty() || current.equals("E")) output.set("0.");
         else if (current.matches(regexNoDecPointBefore)) {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
@@ -205,7 +224,7 @@ public class homeController implements Initializable {
     
     private void addSqrt() {
         String current = output.get();
-        if (current.isEmpty()) output.set("√");
+        if (current.isEmpty() || current.equals("E")) output.set("√");
         else {
             char lastChar = current.charAt(current.length() - 1);
             switch (lastChar) {
@@ -213,6 +232,22 @@ public class homeController implements Initializable {
                 case '+', '×', '÷', '-', '(', '√' -> output.set(current + '√');
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ')' -> output.set(current + '×' + '√');
             }
+        }
+    }
+    
+    private void equalsClick() {
+        try {
+            ans = service.evaluate(output.get(), ans);
+            output.set(ans.toString());
+        } catch (ArithmeticException ex) {
+            output.set("E");
+            Toast.show(scene.getWindow(), "An arithmetic error occurred.");
+        } catch (NumberFormatException ex) {
+            output.set("E");
+            Toast.show(scene.getWindow(), "A number got entered incorrectly.");
+        } catch (TermSyntaxException ex) {
+            output.set("E");
+            Toast.show(scene.getWindow(), "A syntax error occurred.");
         }
     }
 }

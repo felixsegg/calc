@@ -12,7 +12,7 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/java/presentation/home.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/java/presentation/home/home.fxml"));
         Parent root = loader.load();
         
         primaryStage.setTitle("Taschenrechner");
