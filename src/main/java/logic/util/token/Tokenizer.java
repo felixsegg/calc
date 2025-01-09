@@ -27,8 +27,7 @@ public class Tokenizer {
             } else
                 // If the currently considered token is not numerical
                 newToken = switch (term.charAt(i++)) {
-                    case '√' -> new SqrtToken();
-                    case '-', '×', '÷', '+' -> new ElementaryOpToken(term.charAt(i-1)); // index already incremented in head (2 lines above), therefore -1
+                    case '-', '×', '÷', '+', '√' -> new OperationToken(term.charAt(i-1)); // index already incremented in head (2 lines above), therefore -1
                     case '(' -> new OpenParentToken();
                     case ')' -> new CloseParentToken();
                     default ->

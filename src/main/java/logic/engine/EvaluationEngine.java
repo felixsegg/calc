@@ -18,6 +18,7 @@ public class EvaluationEngine {
         // TODO: Syntax check.
         // TODO: Check whether there are enough closing parenthesis and fill them in at the end if needed
         // TODO: Replace number negating minus characters  "(-" with "(n" to indicate negativity and avoid confusion
+        // TODO: Place extra parenthesis as if there was no associativity and no PEMDAS
         // TODO: Replace max number of leading and closing parentheses without changing semantic meaning
         return "";
     }
