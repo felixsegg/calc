@@ -13,8 +13,7 @@ public class TokenUtil {
         for (int i = 0; i < term.length(); ) {
             Token newToken;
             
-            if (Character.isDigit(term.charAt(i)) || term.charAt(i) == '.' || term.charAt(i) == 'n') {
-                // n indicates a negative number, see preprocessing method in the CalculationService.
+            if (Character.isDigit(term.charAt(i)) || term.charAt(i) == '.') {
                 // If the currently considered token is numerical
                 StringBuilder numberString = new StringBuilder();
                 
@@ -23,11 +22,11 @@ public class TokenUtil {
                 while (i < term.length() && (Character.isDigit(term.charAt(i)) || term.charAt(i) == '.'));
                 
                 // NumberFormatException might occur in the following statement, is caught in HomeController.equalsClick()
-                newToken = new NumberToken(new BigDecimal(numberString.toString().replace('n', '-')));
+                newToken = new NumberToken(new BigDecimal(numberString.toString()));
             } else
                 // If the currently considered token is not numerical
                 newToken = switch (term.charAt(i++)) {
-                    case '-', '×', '÷', '+', '√' ->
+                    case '*', '+', '√', 'n', 'i' ->
                             new OperationToken(term.charAt(i - 1)); // index already incremented in head (2 lines above), therefore -1
                     case '(' -> new OpenParentToken();
                     case ')' -> new CloseParentToken();

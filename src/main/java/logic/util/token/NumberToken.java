@@ -1,11 +1,13 @@
 package main.java.logic.util.token;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class NumberToken extends Token {
-    private final BigDecimal value;
+    private BigDecimal value;
     protected NumberToken(BigDecimal value) {
-        // value = null means this token represents "ans".
+        if (value == null)
+            throw new IllegalArgumentException("value must not be null.");
         this.value = value;
     }
     
@@ -13,7 +15,16 @@ public class NumberToken extends Token {
         return value;
     }
     
-    public boolean isAns() {
-        return value == null;
+    public void negate() {
+        value = value.negate();
+    }
+    
+    public void invert() {
+        value = BigDecimal.ONE.divide(value, MathContext.DECIMAL64);
+    }
+    
+    @Override
+    public TokenType getTokenType() {
+        return TokenType.NUMBER;
     }
 }

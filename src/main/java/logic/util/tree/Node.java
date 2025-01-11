@@ -1,5 +1,7 @@
 package main.java.logic.util.tree;
 
-public class Node {
+import java.math.BigDecimal;
 
+public abstract class Node {
+    protected abstract BigDecimal evaluate();
 }

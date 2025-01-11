@@ -16,6 +16,7 @@ import main.java.logic.service.CalculationService;
 import main.java.presentation.Toast;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -238,7 +239,7 @@ public class HomeController implements Initializable {
     private void equalsClick() {
         try {
             ans = service.evaluate(output.get(), ans);
-            output.set(ans.toString());
+            output.set(ans.setScale(6, RoundingMode.HALF_EVEN).toString());
         } catch (ArithmeticException ex) {
             output.set("E");
             Toast.show(scene.getWindow(), "An arithmetic error occurred.");
