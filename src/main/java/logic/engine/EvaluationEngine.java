@@ -3,7 +3,7 @@ package logic.engine;
 import exception.TermSyntaxException;
 import logic.util.token.Token;
 import logic.util.token.TokenUtil;
-import logic.util.tree.TermTree;
+import logic.util.tree.TermTreeUtil;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +12,7 @@ public class EvaluationEngine {
     public static BigDecimal evaluate(String input, BigDecimal ans) {
         String term = preprocess(input, ans);
         List<Token> tokens = TokenUtil.tokenize(term);
-        return TermTree.evaluate(tokens);
+        return TermTreeUtil.evaluate(tokens);
     }
     
     private static String preprocess(String input, BigDecimal ans) {

@@ -7,6 +7,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Inode extends Node {
     private final Operation opType;
@@ -51,5 +52,18 @@ public class Inode extends Node {
             case INVERT -> BigDecimal.ONE.divide(children.get(0).evaluate(), MathContext.DECIMAL64);
             case SQRT -> children.get(0).evaluate().sqrt(MathContext.DECIMAL64);
         };
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Inode inode = (Inode) o;
+        return opType == inode.opType && Objects.equals(children, inode.children);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(opType, children);
     }
 }

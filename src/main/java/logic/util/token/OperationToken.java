@@ -3,8 +3,6 @@ package logic.util.token;
 import logic.util.Operation;
 
 public class OperationToken extends Token {
-    
-    
     private final Operation opType;
     
     public OperationToken(char c) {
@@ -20,6 +18,11 @@ public class OperationToken extends Token {
     
     public Operation getOpType() {
         return opType;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof OperationToken o && this.getOpType() == o.getOpType();
     }
     
     @Override

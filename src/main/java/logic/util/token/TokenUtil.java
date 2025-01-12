@@ -22,7 +22,7 @@ public class TokenUtil {
                 while (i < term.length() && (Character.isDigit(term.charAt(i)) || term.charAt(i) == '.'));
                 
                 // NumberFormatException might occur in the following statement, is caught in HomeController.equalsClick()
-                newToken = new NumberToken(new BigDecimal(numberString.toString()));
+                newToken = new NumberToken(numberString.toString());
             } else
                 // If the currently considered token is not numerical
                 newToken = switch (term.charAt(i++)) {

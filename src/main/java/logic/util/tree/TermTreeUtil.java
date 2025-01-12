@@ -1,6 +1,5 @@
 package logic.util.tree;
 
-import exception.DummyEvaluationException;
 import exception.TermSyntaxException;
 import logic.util.Operation;
 import logic.util.token.*;
@@ -9,32 +8,26 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DummyNode extends Node {
-    private final List<Token> tokenList;
-    
-    protected DummyNode(List<Token> tokenList) {
-        while (TokenUtil.isEncapsulated(tokenList))
-            tokenList = tokenList.subList(1, tokenList.size() - 1);
+public class TermTreeUtil {
+    public static BigDecimal evaluate(List<Token> tokens) {
+        Node root = TermTreeUtil.build(tokens);
+        if (root == null) return BigDecimal.ZERO;
+        BigDecimal result = root.evaluate();
         
-        if (tokenList.isEmpty())
-            throw new IllegalArgumentException("Token list may not be empty (or consist only of empty Parentheses).");
-        
-        this.tokenList = tokenList;
-    }
-    
-    protected List<Token> getTokenList() {
-        return tokenList;
+        return result != null
+                ? root.evaluate()
+                : BigDecimal.ZERO;
     }
     
     private static Node generateNode(List<List<Token>> subTokenLists) {
         List<Node> additionNodeChildren = new ArrayList<>();
         
         // Currently, the last operand gets ignored. Add final + 0, so this won't happen.
-        // TODO: Change that solution, that's ugly.
+        // TODO: Change this solution, it's ugly.
         List<Token> plus = new ArrayList<>();
         plus.add(new OperationToken('+'));
         List<Token> zero = new ArrayList<>();
-        zero.add(new NumberToken(BigDecimal.ZERO));
+        zero.add(new NumberToken("0"));
         subTokenLists.add(plus);
         subTokenLists.add(zero);
         
@@ -49,8 +42,7 @@ public class DummyNode extends Node {
             else if (o.getOpType() == Operation.MULTIPLY) {
                 // Multiplication sequence (PEMDAS)
                 List<Node> multiplicationNodeChildren = new ArrayList<>();
-                multiplicationNodeChildren.add(collapseTermWithUnaries(subTokenLists, i - 1));
-                for (; i < subTokenLists.size(); ++i) {
+                for (i++; i < subTokenLists.size(); i++) {
                     if (subTokenLists.get(i).size() > 1 // Can't be singular operator token
                             || !(subTokenLists.get(i).get(0) instanceof OperationToken op) // Can't be singular operator token
                             || op.getOpType() != Operation.PLUS && op.getOpType() != Operation.MULTIPLY) // Isn't elementary function
@@ -72,7 +64,7 @@ public class DummyNode extends Node {
         };
     }
     
-    private List<List<Token>> generateSubTokenLists() {
+    private static List<List<Token>> generateSubTokenLists(List<Token> tokenList) {
         List<List<Token>> subTokenLists = new ArrayList<>();
         
         for (int i = 0; i < tokenList.size(); i++) {
@@ -88,8 +80,7 @@ public class DummyNode extends Node {
                         Token subTermToken = tokenList.get(++i);
                         if (subTermToken.getTokenType() == TokenType.CLOSING_PARENTHESIS && --currentNestingDepth < 1)
                             break;
-                        else if (subTermToken.getTokenType() == TokenType.OPENING_PARENTHESIS)
-                            currentNestingDepth++;
+                        else if (subTermToken.getTokenType() == TokenType.OPENING_PARENTHESIS) currentNestingDepth++;
                     }
                     toIndex = i + 1;
                 }
@@ -103,10 +94,9 @@ public class DummyNode extends Node {
     
     
     private static Node collapseTermWithUnaries(List<List<Token>> subTokenLists, int index) {
-        DummyNode dummy = new DummyNode(subTokenLists.get(index));
-        Node result = dummy.build();
+        Node result = TermTreeUtil.build(subTokenLists.get(index));
         
-        for (int i = index; i >= 0; --i) {
+        for (int i = index - 1; i >= 0; i--) {
             if (subTokenLists.get(i).size() > 1
                     || !(subTokenLists.get(i).get(0) instanceof OperationToken o)
                     || o.getOpType() != Operation.SQRT && o.getOpType() != Operation.NEGATE && o.getOpType() != Operation.INVERT)
@@ -119,23 +109,18 @@ public class DummyNode extends Node {
         return result;
     }
     
-    protected Node build() {
+    protected static Node build(List<Token> tokens) {
         try {
-            return switch (tokenList.size()) {
+            return switch (tokens.size()) {
                 case 0 -> throw new RuntimeException("Something went terribly wrong.");
                 case 1 ->
-                        new Leaf(((NumberToken) tokenList.get(0)).getValue()); // Can logically only be a singular number if the syntax of the term was correct
-                default -> generateNode(generateSubTokenLists());
+                        new Leaf(((NumberToken) tokens.get(0)).getValue()); // Can logically only be a singular number if the syntax of the term was correct
+                default -> generateNode(generateSubTokenLists(tokens));
             };
         } catch (ClassCastException ex) {
             throw new TermSyntaxException("A singular Token which is not a number does not make sense.");
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new TermSyntaxException("Unexpected token.");
         }
-    }
-    
-    @Override
-    public BigDecimal evaluate() {
-        throw new DummyEvaluationException("Dummies should only be placeholders during generation of a tree and therefore not evaluated.");
     }
 }
