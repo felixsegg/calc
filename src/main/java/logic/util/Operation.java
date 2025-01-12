@@ -1,4 +1,4 @@
-package main.java.logic.util;
+package logic.util;
 
 public enum Operation {
     PLUS,

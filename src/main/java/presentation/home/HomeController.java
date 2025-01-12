@@ -1,4 +1,4 @@
-package main.java.presentation.home;
+package presentation.home;
 
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.StringProperty;
@@ -11,11 +11,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import main.java.exception.TermSyntaxException;
-import main.java.logic.service.CalculationService;
-import main.java.presentation.Toast;
+import exception.TermSyntaxException;
+import logic.service.CalculationService;
+import presentation.Toast;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -239,7 +240,10 @@ public class HomeController implements Initializable {
     private void equalsClick() {
         try {
             ans = service.evaluate(output.get(), ans);
-            output.set(ans.setScale(6, RoundingMode.HALF_EVEN).toString());
+            // Round the output to 10 characters after the decimal point
+            String ansString = ans.scale() > 10
+                    ? ans.setScale(10, RoundingMode.HALF_EVEN).toString() : ans.toString();
+            output.set(ansString);
         } catch (ArithmeticException ex) {
             output.set("E");
             Toast.show(scene.getWindow(), "An arithmetic error occurred.");

@@ -1,6 +1,6 @@
-package main.java.logic.service;
+package logic.service;
 
-import main.java.logic.engine.EvaluationEngine;
+import logic.engine.EvaluationEngine;
 
 import java.math.BigDecimal;
 

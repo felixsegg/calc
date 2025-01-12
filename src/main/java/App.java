@@ -1,4 +1,4 @@
-package main.java;
+
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +12,11 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/java/presentation/home/home.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/presentation/home/home.fxml"));
         Parent root = loader.load();
         
         primaryStage.setTitle("Taschenrechner");
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/main/resources/icon.png"))));
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon.png"))));
         primaryStage.setScene(new Scene(root));
         
         primaryStage.show();

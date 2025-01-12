@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <mainClass>main.java.App</mainClass>
+        <mainClass>App</mainClass>
         <mvnexec.version>3.1.0</mvnexec.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -32,17 +32,31 @@
             <version>21.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>
-
-        <sourceDirectory>src</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
-                <directory>src/resources</directory>
+                <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>src</directory>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.fxml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.fxml</include>
                     <include>**/*.xml</include>
@@ -55,16 +69,17 @@
                 </includes>
                 <excludes>
                     <exclude>UML/**</exclude>
-                    <exclude>resources/**</exclude>
                 </excludes>
             </resource>
-            <resource>
-                <directory>tests</directory>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
                 <includes>
                     <include>**/*.xlsx</include>
                 </includes>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
 
         <plugins>
             <plugin>

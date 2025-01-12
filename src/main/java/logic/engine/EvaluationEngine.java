@@ -1,9 +1,9 @@
-package main.java.logic.engine;
+package logic.engine;
 
-import main.java.exception.TermSyntaxException;
-import main.java.logic.util.token.Token;
-import main.java.logic.util.token.TokenUtil;
-import main.java.logic.util.tree.TermTree;
+import exception.TermSyntaxException;
+import logic.util.token.Token;
+import logic.util.token.TokenUtil;
+import logic.util.tree.TermTree;
 
 import java.math.BigDecimal;
 import java.util.List;

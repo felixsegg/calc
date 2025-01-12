@@ -1,13 +1,13 @@
-package main.java.logic.util.token;
+package logic.util.token;
 
-import main.java.logic.util.Operation;
+import logic.util.Operation;
 
 public class OperationToken extends Token {
     
     
     private final Operation opType;
     
-    protected OperationToken(char c) {
+    public OperationToken(char c) {
         opType = switch (c) {
             case '+' -> Operation.PLUS;
             case '*' -> Operation.MULTIPLY;

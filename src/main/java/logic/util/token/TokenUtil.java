@@ -1,6 +1,6 @@
-package main.java.logic.util.token;
+package logic.util.token;
 
-import main.java.exception.TermSyntaxException;
+import exception.TermSyntaxException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

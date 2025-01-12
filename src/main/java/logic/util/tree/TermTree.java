@@ -1,10 +1,9 @@
-package main.java.logic.util.tree;
+package logic.util.tree;
 
-import main.java.exception.TermSyntaxException;
-import main.java.logic.util.token.*;
+import exception.TermSyntaxException;
+import logic.util.token.Token;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TermTree {

@@ -1,4 +1,4 @@
-package main.java.logic.util.tree;
+package logic.util.tree;
 
 import java.math.BigDecimal;
 

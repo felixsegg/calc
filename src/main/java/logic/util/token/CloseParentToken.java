@@ -1,4 +1,4 @@
-package main.java.logic.util.token;
+package logic.util.token;
 
 public class CloseParentToken extends Token {
     @Override

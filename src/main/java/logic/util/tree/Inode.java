@@ -1,6 +1,6 @@
-package main.java.logic.util.tree;
+package logic.util.tree;
 
-import main.java.logic.util.Operation;
+import logic.util.Operation;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

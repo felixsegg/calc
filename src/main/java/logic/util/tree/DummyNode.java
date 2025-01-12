@@ -1,9 +1,9 @@
-package main.java.logic.util.tree;
+package logic.util.tree;
 
-import main.java.exception.DummyEvaluationException;
-import main.java.exception.TermSyntaxException;
-import main.java.logic.util.Operation;
-import main.java.logic.util.token.*;
+import exception.DummyEvaluationException;
+import exception.TermSyntaxException;
+import logic.util.Operation;
+import logic.util.token.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +28,15 @@ public class DummyNode extends Node {
     
     private static Node generateNode(List<List<Token>> subTokenLists) {
         List<Node> additionNodeChildren = new ArrayList<>();
+        
+        // Currently, the last operand gets ignored. Add final + 0, so this won't happen.
+        // TODO: Change that solution, that's ugly.
+        List<Token> plus = new ArrayList<>();
+        plus.add(new OperationToken('+'));
+        List<Token> zero = new ArrayList<>();
+        zero.add(new NumberToken(BigDecimal.ZERO));
+        subTokenLists.add(plus);
+        subTokenLists.add(zero);
         
         for (int i = 0; i < subTokenLists.size(); i++) {
             if (subTokenLists.get(i).size() > 1 // Can't be singular operator token

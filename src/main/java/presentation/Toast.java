@@ -1,4 +1,4 @@
-package main.java.presentation;
+package presentation;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;
