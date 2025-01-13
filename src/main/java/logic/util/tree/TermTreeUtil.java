@@ -34,24 +34,24 @@ public class TermTreeUtil {
         for (int i = 0; i < subTokenLists.size(); i++) {
             if (subTokenLists.get(i).size() > 1 // Can't be singular operator token
                     || !(subTokenLists.get(i).get(0) instanceof OperationToken o) // Can't be singular operator token
-                    || o.getOpType() != Operation.PLUS && o.getOpType() != Operation.MULTIPLY) // Isn't elementary function
+                    || o.getOpType() != Operation.ADDITION && o.getOpType() != Operation.MULTIPLY) // Isn't elementary function
                 continue;
             
-            if (o.getOpType() == Operation.PLUS)
+            if (o.getOpType() == Operation.ADDITION)
                 additionNodeChildren.add(collapseTermWithUnaries(subTokenLists, i - 1));
             else if (o.getOpType() == Operation.MULTIPLY) {
                 // Multiplication sequence (PEMDAS)
                 List<Node> multiplicationNodeChildren = new ArrayList<>();
-                for (i++; i < subTokenLists.size(); i++) {
+                for (; i < subTokenLists.size(); i++) {
                     if (subTokenLists.get(i).size() > 1 // Can't be singular operator token
                             || !(subTokenLists.get(i).get(0) instanceof OperationToken op) // Can't be singular operator token
-                            || op.getOpType() != Operation.PLUS && op.getOpType() != Operation.MULTIPLY) // Isn't elementary function
+                            || op.getOpType() != Operation.ADDITION && op.getOpType() != Operation.MULTIPLY) // Isn't elementary function
                         continue;
                     
                     // Token has to be either addition or multiplication, meaning the previous token has to be a term bounded to multiplication
                     multiplicationNodeChildren.add(collapseTermWithUnaries(subTokenLists, i - 1));
                     
-                    if (op.getOpType() == Operation.PLUS) break;
+                    if (op.getOpType() == Operation.ADDITION) break;
                 }
                 additionNodeChildren.add(new Inode(Operation.MULTIPLY, multiplicationNodeChildren));
             }
@@ -60,7 +60,7 @@ public class TermTreeUtil {
         return switch (additionNodeChildren.size()) {
             case 0 -> collapseTermWithUnaries(subTokenLists, subTokenLists.size());
             case 1 -> additionNodeChildren.get(0);
-            default -> new Inode(Operation.PLUS, additionNodeChildren);
+            default -> new Inode(Operation.ADDITION, additionNodeChildren);
         };
     }
     
@@ -94,7 +94,14 @@ public class TermTreeUtil {
     
     
     private static Node collapseTermWithUnaries(List<List<Token>> subTokenLists, int index) {
-        Node result = TermTreeUtil.build(subTokenLists.get(index));
+        List<Token> consideredTokenList = subTokenLists.get(index);
+        
+        while (TokenUtil.isEncapsulated(consideredTokenList)) {
+            consideredTokenList = consideredTokenList.subList(1, consideredTokenList.size() - 1);
+        }
+        
+        Node result = TermTreeUtil.build(consideredTokenList);
+        if(index < 1) return result;
         
         for (int i = index - 1; i >= 0; i--) {
             if (subTokenLists.get(i).size() > 1
@@ -113,8 +120,8 @@ public class TermTreeUtil {
         try {
             return switch (tokens.size()) {
                 case 0 -> throw new RuntimeException("Something went terribly wrong.");
-                case 1 ->
-                        new Leaf(((NumberToken) tokens.get(0)).getValue()); // Can logically only be a singular number if the syntax of the term was correct
+                // Case 1 can logically only be a singular number if the syntax of the term was correct
+                case 1 -> new Leaf(((NumberToken) tokens.get(0)).getValue());
                 default -> generateNode(generateSubTokenLists(tokens));
             };
         } catch (ClassCastException ex) {

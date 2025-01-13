@@ -7,7 +7,7 @@ public class OperationToken extends Token {
     
     public OperationToken(char c) {
         opType = switch (c) {
-            case '+' -> Operation.PLUS;
+            case '+' -> Operation.ADDITION;
             case '*' -> Operation.MULTIPLY;
             case '√' -> Operation.SQRT;
             case 'n' -> Operation.NEGATE;

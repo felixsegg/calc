@@ -34,6 +34,7 @@ public class HomeController implements Initializable {
     private StringProperty output;
     private final CalculationService service = CalculationService.getInstance();
     private BigDecimal ans;
+    private boolean isAns = false;
     
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -50,7 +51,6 @@ public class HomeController implements Initializable {
         
         initializeOutputLabel();
         initializeKeyGrid();
-        
     }
     
     private void initializeOutputLabel() {
@@ -69,9 +69,17 @@ public class HomeController implements Initializable {
         }
     }
     
+    private void checkIfAns() {
+        if (isAns) {
+            isAns = false;
+            output.set("");
+        }
+    }
+    
     private void initializeHotkeys() {
         try {
             scene.setOnKeyPressed(keyEvent -> {
+                checkIfAns();
                 switch (keyEvent.getCode()) {
                     case ENTER -> equalsClick();
                     case DIGIT0, NUMPAD0 -> addNumber('0');
@@ -100,6 +108,7 @@ public class HomeController implements Initializable {
     
     @FXML
     private void keyClick(MouseEvent mouseEvent) {
+        checkIfAns();
         try {
             Label clickedLabel = (Label) mouseEvent.getSource();
             char labelChar = clickedLabel.getText().charAt(0);
@@ -116,6 +125,7 @@ public class HomeController implements Initializable {
                 default ->
                         throw new RuntimeException("FATAL: Somehow, the clicked label contained an illegal character.");
             }
+            
         } catch (ClassCastException ex) {
             throw new RuntimeException("FATAL: Somehow, the keyClick() method in homeController.java was called from something other than a Label.");
         } catch (IndexOutOfBoundsException ex) {
@@ -142,8 +152,10 @@ public class HomeController implements Initializable {
             // String must not end in 0 or has a decimal point right in front of ending String of zeroes if new input is
             // supposed to be 0, otherwise it gets ignored.
             
-            // TODO: Fix leading zero.
-            if (c != '0' || current.matches(regexCheckZero)) output.set(current + c);
+            char lastChar = current.charAt(current.length()-1);
+            // TODO: Fix leading zero. Can only put 2 zeroes after decimal point.
+            if (c != '0' || current.matches(regexCheckZero)) output.set(
+                    lastChar == ')' ? current + '×' + c : current + c);
         }
     }
     
@@ -243,6 +255,7 @@ public class HomeController implements Initializable {
             // Round the output to 10 characters after the decimal point
             String ansString = ans.scale() > 10
                     ? ans.setScale(10, RoundingMode.HALF_EVEN).toString() : ans.toString();
+            isAns = true;
             output.set(ansString);
         } catch (ArithmeticException ex) {
             output.set("E");

@@ -14,7 +14,7 @@ public class Inode extends Node {
     private final List<Node> children = new ArrayList<>();
     
     protected Inode(Operation opType, Node... children) {
-        if (opType == Operation.PLUS && children.length < 2
+        if (opType == Operation.ADDITION && children.length < 2
                 || opType == Operation.MULTIPLY && children.length < 2
                 || opType == Operation.SQRT && children.length != 1
                 || opType == Operation.NEGATE && children.length != 1
@@ -29,7 +29,7 @@ public class Inode extends Node {
     }
     
     protected Inode(Operation opType, List<Node> children) {
-        if (opType == Operation.PLUS && children.size() < 2
+        if (opType == Operation.ADDITION && children.size() < 2
                 || opType == Operation.MULTIPLY && children.size() < 2
                 || opType == Operation.SQRT && children.size() != 1
                 || opType == Operation.NEGATE && children.size() != 1
@@ -46,7 +46,7 @@ public class Inode extends Node {
     @Override
     protected BigDecimal evaluate() {
         return switch (opType) {
-            case PLUS -> children.stream().map(Node::evaluate).reduce(BigDecimal.ZERO, BigDecimal::add);
+            case ADDITION -> children.stream().map(Node::evaluate).reduce(BigDecimal.ZERO, BigDecimal::add);
             case NEGATE -> children.get(0).evaluate().negate();
             case MULTIPLY -> children.stream().map(Node::evaluate).reduce(BigDecimal.ONE, BigDecimal::multiply);
             case INVERT -> BigDecimal.ONE.divide(children.get(0).evaluate(), MathContext.DECIMAL64);

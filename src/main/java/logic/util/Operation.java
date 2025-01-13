@@ -1,7 +1,7 @@
 package logic.util;
 
 public enum Operation {
-    PLUS,
+    ADDITION,
     MULTIPLY,
     SQRT,
     NEGATE,
