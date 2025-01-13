@@ -25,7 +25,7 @@ public class NumberToken extends Token {
     
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof NumberToken n && this.value.equals(n.value);
+        return obj instanceof NumberToken n && this.value.compareTo(n.value) == 0;
     }
     
     @Override

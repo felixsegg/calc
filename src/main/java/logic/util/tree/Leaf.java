@@ -19,7 +19,7 @@ public class Leaf extends Node{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Leaf leaf = (Leaf) o;
-        return Objects.equals(value, leaf.value);
+        return value.compareTo(leaf.value) == 0;
     }
     
     @Override
